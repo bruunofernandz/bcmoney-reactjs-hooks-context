@@ -16,6 +16,6 @@ You will also see any lint errors in the console.
 
 ### `What do you need know ?`
 
-App for manager your deposit or withdraw your spends.
+App for manager your deposit or withdraw, like your daily spends.
 
 I used react js, styled-components, context api and ThemeContext with hooks for make dark mode and statment management.
