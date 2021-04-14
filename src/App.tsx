@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { GlobalStyle } from './styles/globalStyles';
+import { Header } from './components/Header';
+import { Dashboard } from './components/Dashboard';
+import Modal from 'react-modal';
+import './server/server';
+import { NewTransactionModal } from './components/NewTransactionModal';
+import { TransactionsProvider } from './hooks/useTransactions';
+import { ThemeProvider } from 'styled-components';
+import light from './styles/themes/light';
+import dark from './styles/themes/dark';
+import usePersistedTheme from './hooks/usePersistedTheme';
 
-function App() {
+Modal.setAppElement('#root');
+
+export const App: React.FC = () => {
+  const [modalState, setModalState] = useState(false);
+  const [theme, setTheme] = usePersistedTheme('theme', light);
+
+  const toggleTheme = () => {
+    setTheme(theme.title === 'light' ? dark : light);
+  };
+
+  function handleOpenNewTransaction() {
+    setModalState(true);
+  }
+
+  function handleCloseNewTransaction() {
+    setModalState(false);
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <ThemeProvider theme={theme}>
+      <TransactionsProvider>
+        <Header onOpenNewModalTransaction={handleOpenNewTransaction} toggleTheme={toggleTheme} />
 
-export default App;
+        <Dashboard />
+        <NewTransactionModal 
+          isOpen={modalState} 
+          onRequestClose={handleCloseNewTransaction} />
+        <GlobalStyle />
+      </TransactionsProvider>
+    </ThemeProvider>
+  );
+};
